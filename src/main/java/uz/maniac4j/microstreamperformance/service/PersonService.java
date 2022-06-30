@@ -1,9 +1,11 @@
 package uz.maniac4j.microstreamperformance.service;
 
+import one.microstream.reflect.ClassLoaderProvider;
 import one.microstream.storage.embedded.types.EmbeddedStorage;
 import one.microstream.storage.embedded.types.EmbeddedStorageManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import uz.maniac4j.microstreamperformance.model.Person;
 import uz.maniac4j.microstreamperformance.repository.PersonRepository;
 
@@ -13,10 +15,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class PersonService implements PersonRepository {
-    private final List<Person> people;
-    private final EmbeddedStorageManager storage;
+    private final List<Person> people=new ArrayList<>();
+//    private final EmbeddedStorageManager storage=EmbeddedStorage.start(
+//            this.people,
+//            Paths.get("/home/kali/Documents/microstream-performance/microstream_data"));
+
+    private final EmbeddedStorageManager storage = EmbeddedStorage.Foundation(Paths.get("/home/kali/Documents/microstream-performance/microstream_data"))
+            .onConnectionFoundation(cf -> cf.setClassLoaderProvider(ClassLoaderProvider.New(
+                    Thread.currentThread().getContextClassLoader())))
+            .start(this.people);
+
+    @Value("${microstream.store.location}")
+    String location;
+
+
 
     public String generateRandomPassword(int len) {
         String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk"
@@ -31,17 +45,17 @@ public class PersonService implements PersonRepository {
 
 
 
-    public PersonService(@Value("${microstream.store.location}") String location)
-    {
-        super();
-
-        this.people = new ArrayList<>();
-
-        this.storage   = EmbeddedStorage.start(
-                this.people,
-                Paths.get(location)
-        );
-    }
+//    public PersonService(@Value("${microstream.store.location}") String location)
+//    {
+//        super();
+//
+//        this.people = new ArrayList<>();
+//
+//        this.storage   = EmbeddedStorage.start(
+//                this.people,
+//                Paths.get(location)
+//        );
+//    }
     @Override
     public void add(Person person) {
         person.setId((long) (people.size() + 1));
@@ -72,6 +86,7 @@ public class PersonService implements PersonRepository {
 
     @Override
     public Person findById(Long id) {
+        System.out.println(people.size());
         return this.people.stream()
                 .filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
@@ -88,6 +103,11 @@ public class PersonService implements PersonRepository {
     }
 
     public long count(){
+        System.out.println(people.size());
+//        System.out.println(people.get(2));
+//        Person person=people.get(2);
+//        System.out.println(person);
+//        System.out.println(new Person(131231L,"AA",12));
         return people.size();
     }
 
