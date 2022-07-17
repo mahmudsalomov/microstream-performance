@@ -22,13 +22,14 @@ public class PersonService implements PersonRepository {
 //            this.people,
 //            Paths.get("/home/kali/Documents/microstream-performance/microstream_data"));
 
-    private final EmbeddedStorageManager storage = EmbeddedStorage.Foundation(Paths.get("/home/kali/Documents/microstream-performance/microstream_data"))
+    @Value("${microstream.store.location}")
+    String location;
+    private final EmbeddedStorageManager storage = EmbeddedStorage.Foundation(Paths.get("/home/kali/Documents/microstream_data"))
             .onConnectionFoundation(cf -> cf.setClassLoaderProvider(ClassLoaderProvider.New(
                     Thread.currentThread().getContextClassLoader())))
             .start(this.people);
 
-    @Value("${microstream.store.location}")
-    String location;
+
 
 
 
