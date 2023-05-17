@@ -17,11 +17,13 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/one.microstream/microstream-integrations-spring-boot3 -->
         <dependency>
             <groupId>one.microstream</groupId>
-            <artifactId>microstream-integrations-spring-boot</artifactId>
-            <version>07.00.00-MS-GA</version>
+            <artifactId>microstream-integrations-spring-boot3</artifactId>
+            <version>08.00.00-MS-GA</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
