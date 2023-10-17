@@ -70,4 +70,7 @@ public class PersonController {
     public long average(){
         return personService.averageAge();
     }
+
+
+    
 }
